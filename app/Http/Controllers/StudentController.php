@@ -13,7 +13,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::with(['courses', 'payments'])->get();
+        $students = Student::with(['courses', 'payments'])->paginate(15);
         return view('students.index', compact('students'));
     }
 
@@ -51,9 +51,17 @@ class StudentController extends Controller
      */
     public function show(Student $student)
     {
-        $student->load(['courses', 'payments']);
+        $student->load(['courses']);
+        
+        // Paginate payments (10 per page)
+        $payments = $student->payments()
+            ->with('course')
+            ->orderBy('date_of_payment', 'desc')
+            ->paginate(10);
+        
         $courses = Course::all();
-        return view('students.show', compact('student', 'courses'));
+        
+        return view('students.show', compact('student', 'courses', 'payments'));
     }
 
     /**

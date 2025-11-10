@@ -11,14 +11,17 @@ use Illuminate\Support\Facades\Validator;
 class StudentApiController extends Controller
 {
     /**
-     * Get all students
+     * Get all students (paginated)
      * 
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $students = Student::with('courses')->get()->map(function($student) {
+            $perPage = $request->get('per_page', 15);
+            $students = Student::with('courses')->paginate($perPage);
+            
+            $students->getCollection()->transform(function($student) {
                 return [
                     'id' => $student->id,
                     'name' => $student->name,
@@ -44,7 +47,15 @@ class StudentApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Students retrieved successfully',
-                'data' => $students
+                'data' => $students->items(),
+                'pagination' => [
+                    'total' => $students->total(),
+                    'per_page' => $students->perPage(),
+                    'current_page' => $students->currentPage(),
+                    'last_page' => $students->lastPage(),
+                    'from' => $students->firstItem(),
+                    'to' => $students->lastItem()
+                ]
             ], 200);
         } catch (\Exception $e) {
             return response()->json([

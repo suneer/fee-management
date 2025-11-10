@@ -150,6 +150,11 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination Links -->
+        <div class="d-flex justify-content-center mt-3">
+            {{ $students->links() }}
+        </div>
     </div>
 </div>
 @endsection

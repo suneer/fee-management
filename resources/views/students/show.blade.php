@@ -215,7 +215,7 @@
                 @endif
             </div>
             <div class="card-body">
-                @if($student->payments->count() > 0)
+                @if($payments->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -228,9 +228,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($student->payments->sortByDesc('date_of_payment') as $index => $payment)
+                                @foreach($payments as $index => $payment)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
+                                        <td>{{ ($payments->currentPage() - 1) * $payments->perPage() + $loop->iteration }}</td>
                                         <td>{{ $payment->date_of_payment->format('d M, Y') }}</td>
                                         <td>{{ $payment->course->name }}</td>
                                         <td><strong class="text-success">₹{{ number_format($payment->amount_paid, 2) }}</strong></td>
@@ -240,11 +240,16 @@
                             </tbody>
                             <tfoot>
                                 <tr class="table-light">
-                                    <th colspan="3">Total Payments Made</th>
+                                    <th colspan="3">Total Payments Made (All Pages)</th>
                                     <th colspan="2" class="text-success">₹{{ number_format($student->payments->sum('amount_paid'), 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>
+                    </div>
+                    
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-center mt-3">
+                        {{ $payments->links() }}
                     </div>
                 @else
                     <div class="text-center py-4">

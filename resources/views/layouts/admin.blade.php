@@ -92,9 +92,6 @@
                             <a href="{{ route('student.dashboard') }}" class="{{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
                                 <i class="bi bi-speedometer2"></i> My Dashboard
                             </a>
-                            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                                <i class="bi bi-person-circle"></i> My Profile
-                            </a>
                         @endif
                     @endauth
                 </nav>

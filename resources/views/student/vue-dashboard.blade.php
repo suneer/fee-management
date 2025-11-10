@@ -99,7 +99,6 @@
                             </div>
                             <div>
                                 <h3 class="mb-1">Welcome back, @{{ studentData.name }}! 👋</h3>
-                                <p class="mb-0 opacity-75">Here's your academic and financial overview</p>
                             </div>
                         </div>
                     </div>
@@ -455,7 +454,7 @@ createApp({
                 payments: []
             },
             paymentForm: {
-                student_id: {{ auth()->user()->id }},
+                student_id: {{ $student->id }},
                 course_id: '',
                 amount_paid: '',
                 date_of_payment: new Date().toISOString().split('T')[0]
@@ -476,7 +475,7 @@ createApp({
                 this.error = null;
                 
                 // Fetch student data with courses
-                const response = await axios.get('/api/students/{{ auth()->user()->id }}');
+                const response = await axios.get('/api/students/{{ $student->id }}');
                 
                 if (response.data.success) {
                     this.studentData = response.data.data;
@@ -493,7 +492,7 @@ createApp({
         
         async fetchFeeDetails() {
             try {
-                const response = await axios.get('/api/students/{{ auth()->user()->id }}/fee-details');
+                const response = await axios.get('/api/students/{{ $student->id }}/fee-details');
                 
                 if (response.data.success) {
                     this.feeDetails = response.data.data;

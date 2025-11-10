@@ -8,18 +8,23 @@ use App\Models\Student;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\PaymentRecorded;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentApiController extends Controller
 {
     /**
-     * Get all payments
+     * Get all payments (paginated)
      * 
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $payments = Payment::with(['student', 'course'])->get()->map(function($payment) {
+            $perPage = $request->get('per_page', 20);
+            $payments = Payment::with(['student', 'course'])->latest()->paginate($perPage);
+            
+            $payments->getCollection()->transform(function($payment) {
                 return [
                     'id' => $payment->id,
                     'student_id' => $payment->student_id,
@@ -37,7 +42,15 @@ class PaymentApiController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payments retrieved successfully',
-                'data' => $payments
+                'data' => $payments->items(),
+                'pagination' => [
+                    'total' => $payments->total(),
+                    'per_page' => $payments->perPage(),
+                    'current_page' => $payments->currentPage(),
+                    'last_page' => $payments->lastPage(),
+                    'from' => $payments->firstItem(),
+                    'to' => $payments->lastItem()
+                ]
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -163,6 +176,14 @@ class PaymentApiController extends Controller
                 'amount_paid' => $request->amount_paid,
                 'date_of_payment' => $request->date_of_payment
             ]);
+
+            // Send email notification to student
+            try {
+                Mail::to($student->email)->send(new PaymentRecorded($payment));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send payment email via API: ' . $e->getMessage());
+                // Continue execution even if email fails
+            }
 
             // Recalculate updated fee details after payment
             $totalPaidForCourse = Payment::where('student_id', $request->student_id)

@@ -501,9 +501,9 @@ createApp({
             },
             successMessage: null,
             errorMessage: null,
-            studentId: 1,
-            feeStudentId: 1,
-            paymentStudentId: 1,
+            studentId: '',
+            feeStudentId: '',
+            paymentStudentId: '',
             apiResponses: {
                 allStudents: null,
                 singleStudent: null,
@@ -522,9 +522,9 @@ createApp({
                 status: 'active'
             },
             newPayment: {
-                student_id: 1,
-                course_id: 1,
-                amount_paid: 0,
+                student_id: '',
+                course_id: '',
+                amount_paid: '',
                 date_of_payment: new Date().toISOString().split('T')[0]
             }
         };

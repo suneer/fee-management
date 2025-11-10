@@ -6,6 +6,8 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Mail\PaymentRecorded;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -67,8 +69,16 @@ class PaymentController extends Controller
         // Create payment
         $payment = Payment::create($validated);
 
+        // Send email notification to student
+        try {
+            Mail::to($student->email)->send(new PaymentRecorded($payment));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send payment email: ' . $e->getMessage());
+            // Continue execution even if email fails
+        }
+
         return redirect()->route('students.show', $student)
-            ->with('success', 'Payment recorded successfully!');
+            ->with('success', 'Payment recorded successfully! Confirmation email sent to student.');
     }
 
     /**
