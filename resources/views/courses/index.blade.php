@@ -98,17 +98,22 @@
                 </tbody>
             </table>
         </div>
+        
+        <!-- Pagination Links -->
+        <div class="d-flex justify-content-center mt-3">
+            {{ $courses->links() }}
+        </div>
     </div>
 </div>
 
 <!-- Summary Card -->
-@if($courses->count() > 0)
+@if($courses->total() > 0)
 <div class="row mt-4">
     <div class="col-md-3">
         <div class="card bg-primary text-white">
             <div class="card-body">
                 <h6>Total Courses</h6>
-                <h2>{{ $courses->count() }}</h2>
+                <h2>{{ $courses->total() }}</h2>
             </div>
         </div>
     </div>
@@ -116,7 +121,7 @@
         <div class="card bg-success text-white">
             <div class="card-body">
                 <h6>Total Enrollments</h6>
-                <h2>{{ $courses->sum('students_count') }}</h2>
+                <h2>{{ \App\Models\Course::withCount('students')->get()->sum('students_count') }}</h2>
             </div>
         </div>
     </div>
@@ -124,7 +129,7 @@
         <div class="card bg-info text-white">
             <div class="card-body">
                 <h6>Avg Fee/Month</h6>
-                <h2>₹{{ number_format($courses->avg('fee_per_month'), 0) }}</h2>
+                <h2>₹{{ number_format(\App\Models\Course::avg('fee_per_month'), 0) }}</h2>
             </div>
         </div>
     </div>
@@ -132,7 +137,7 @@
         <div class="card bg-warning text-white">
             <div class="card-body">
                 <h6>Highest Fee</h6>
-                <h2>₹{{ number_format($courses->max('fee_per_month'), 0) }}</h2>
+                <h2>₹{{ number_format(\App\Models\Course::max('fee_per_month'), 0) }}</h2>
             </div>
         </div>
     </div>

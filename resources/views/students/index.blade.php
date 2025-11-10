@@ -43,13 +43,15 @@
                             </td>
                             <td>
                                 @if($student->courses->count() > 0)
-                                    <ul class="list-unstyled mb-0">
+                                    <span class="badge bg-primary">{{ $student->courses->count() }} {{ $student->courses->count() == 1 ? 'Course' : 'Courses' }}</span>
+                                    @if($student->courses->count() <= 2)
+                                        <br>
                                         @foreach($student->courses as $course)
-                                            <li><small>{{ $course->name }}</small></li>
+                                            <small class="text-muted d-block">{{ Str::limit($course->name, 20) }}</small>
                                         @endforeach
-                                    </ul>
+                                    @endif
                                 @else
-                                    <span class="text-muted">No courses assigned</span>
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                             <td>₹{{ number_format($student->total_fee, 2) }}</td>

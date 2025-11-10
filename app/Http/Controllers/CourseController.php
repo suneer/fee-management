@@ -12,7 +12,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::withCount('students')->get();
+        $courses = Course::withCount('students')->paginate(5);
         return view('courses.index', compact('courses'));
     }
 
