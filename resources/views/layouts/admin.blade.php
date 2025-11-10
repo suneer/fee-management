@@ -72,6 +72,9 @@
                     @auth
                         @if(auth()->user()->isAdmin())
                             <!-- Admin Menu -->
+                            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
                             <a href="{{ route('students.index') }}" class="{{ request()->routeIs('students.*') ? 'active' : '' }}">
                                 <i class="bi bi-people"></i> Students
                             </a>
@@ -80,6 +83,9 @@
                             </a>
                             <a href="{{ route('payments.create') }}" class="{{ request()->routeIs('payments.*') ? 'active' : '' }}">
                                 <i class="bi bi-cash-coin"></i> Payments
+                            </a>
+                            <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                                <i class="bi bi-file-earmark-bar-graph"></i> Reports
                             </a>
                         @else
                             <!-- Student Menu -->

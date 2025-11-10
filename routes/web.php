@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,10 +28,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Dashboard redirect based on role
+Route::get('/dashboard', function () {
+    if (auth()->check()) {
+        return auth()->user()->isAdmin() 
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('student.dashboard');
+    }
+    return redirect()->route('login');
+})->middleware(['auth'])->name('dashboard');
+
 // Admin Dashboard
-Route::get('/admin/dashboard', function () {
-    return redirect()->route('students.index');
-})->middleware(['auth', 'admin'])->name('admin.dashboard');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
+    ->middleware(['auth', 'admin'])
+    ->name('admin.dashboard');
 
 // Student Dashboard
 Route::get('/student/dashboard', function () {
@@ -78,6 +90,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     Route::post('payments/calculate-emi', [PaymentController::class, 'calculateEmi'])
         ->name('payments.calculate-emi');
+    
+    // Reporting Routes
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/monthly-breakdown', [ReportController::class, 'monthlyBreakdown'])->name('reports.monthly-breakdown');
+    Route::get('reports/course-revenue', [ReportController::class, 'courseRevenue'])->name('reports.course-revenue');
+    Route::get('reports/export/students', [ReportController::class, 'exportStudents'])->name('reports.export-students');
+    Route::get('reports/export/monthly', [ReportController::class, 'exportMonthly'])->name('reports.export-monthly');
+    Route::get('reports/export/course-revenue', [ReportController::class, 'exportCourseRevenue'])->name('reports.export-course-revenue');
 });
 
 // Profile Routes
