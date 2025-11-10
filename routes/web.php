@@ -43,14 +43,28 @@ Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])
     ->middleware(['auth', 'admin'])
     ->name('admin.dashboard');
 
-// Student Dashboard
+// Student Dashboard (Vue.js powered)
 Route::get('/student/dashboard', function () {
     $student = auth()->user()->student;
     if (!$student) {
         return view('student.no-profile');
     }
-    return view('student.dashboard', compact('student'));
+    return view('student.vue-dashboard', compact('student'));
 })->middleware(['auth'])->name('student.dashboard');
+
+// Original Student Dashboard (Legacy)
+Route::get('/student/dashboard-legacy', function () {
+    $student = auth()->user()->student;
+    if (!$student) {
+        return view('student.no-profile');
+    }
+    return view('student.dashboard', compact('student'));
+})->middleware(['auth'])->name('student.dashboard.legacy');
+
+// API Demo Page - RESTful API Testing Interface
+Route::get('/api-demo', function () {
+    return view('api-demo');
+})->middleware(['auth', 'admin'])->name('api.demo');
 
 // Admin Routes - Protected by auth and admin middleware
 Route::middleware(['auth', 'admin'])->group(function () {

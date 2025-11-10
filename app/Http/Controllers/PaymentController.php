@@ -36,8 +36,10 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|exists:students,id',
             'course_id' => 'required|exists:courses,id',
-            'amount_paid' => 'required|numeric|min:0',
+            'amount_paid' => 'required|numeric|min:0.01',
             'date_of_payment' => 'required|date',
+        ], [
+            'amount_paid.min' => 'Payment amount must be a positive number greater than zero.'
         ]);
 
         // Verify student is enrolled in the course
@@ -46,6 +48,20 @@ class PaymentController extends Controller
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Student is not enrolled in the selected course!');
+        }
+
+        // Validate that payment doesn't exceed remaining balance
+        $course = Course::findOrFail($validated['course_id']);
+        $totalCourseFee = $course->duration * $course->fee_per_month;
+        $totalPaidForCourse = Payment::where('student_id', $validated['student_id'])
+            ->where('course_id', $validated['course_id'])
+            ->sum('amount_paid');
+        $remainingBalance = $totalCourseFee - $totalPaidForCourse;
+
+        if ($validated['amount_paid'] > $remainingBalance) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Payment amount (₹{$validated['amount_paid']}) exceeds the remaining balance (₹{$remainingBalance}). Total course fee is ₹{$totalCourseFee} and ₹{$totalPaidForCourse} has already been paid.");
         }
 
         // Create payment
@@ -82,9 +98,29 @@ class PaymentController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|exists:students,id',
             'course_id' => 'required|exists:courses,id',
-            'amount_paid' => 'required|numeric|min:0',
+            'amount_paid' => 'required|numeric|min:0.01',
             'date_of_payment' => 'required|date',
+        ], [
+            'amount_paid.min' => 'Payment amount must be a positive number greater than zero.'
         ]);
+
+        // Validate that updated payment doesn't exceed remaining balance
+        $course = Course::findOrFail($validated['course_id']);
+        $totalCourseFee = $course->duration * $course->fee_per_month;
+        
+        // Calculate total paid excluding the current payment being updated
+        $totalPaidForCourse = Payment::where('student_id', $validated['student_id'])
+            ->where('course_id', $validated['course_id'])
+            ->where('id', '!=', $payment->id)
+            ->sum('amount_paid');
+        
+        $remainingBalance = $totalCourseFee - $totalPaidForCourse;
+
+        if ($validated['amount_paid'] > $remainingBalance) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', "Updated payment amount (₹{$validated['amount_paid']}) exceeds the remaining balance (₹{$remainingBalance}). Total course fee is ₹{$totalCourseFee} and ₹{$totalPaidForCourse} has already been paid.");
+        }
 
         $payment->update($validated);
 

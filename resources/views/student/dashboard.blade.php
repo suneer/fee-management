@@ -3,7 +3,48 @@
 @section('title', 'Student Dashboard')
 @section('page-title', 'My Dashboard')
 
+@section('styles')
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+    [v-cloak] {
+        display: none;
+    }
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(0, 0, 0, 0.1);
+        border-radius: 50%;
+        border-top-color: #007bff;
+        animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .stat-card {
+        transition: transform 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .course-card {
+        transition: all 0.3s;
+        border-left: 4px solid #007bff;
+    }
+    .course-card:hover {
+        background-color: #f8f9fa;
+    }
+    .payment-badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.8rem;
+    }
+</style>
+@endsection
+
 @section('content')
+<div id="studentDashboard" v-cloak>
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="alert alert-info">

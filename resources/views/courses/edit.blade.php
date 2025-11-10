@@ -42,11 +42,11 @@
                             <div class="mb-3">
                                 <label for="fee_per_month" class="form-label">Fee per Month (₹) <span class="text-danger">*</span></label>
                                 <input type="number" step="0.01" class="form-control @error('fee_per_month') is-invalid @enderror" 
-                                       id="fee_per_month" name="fee_per_month" value="{{ old('fee_per_month', $course->fee_per_month) }}" min="0" required>
+                                       id="fee_per_month" name="fee_per_month" value="{{ old('fee_per_month', $course->fee_per_month) }}" min="0.01" required>
                                 @error('fee_per_month')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
-                                <small class="form-text text-muted">Monthly fee amount</small>
+                                <small class="form-text text-muted">Monthly fee amount (must be positive)</small>
                             </div>
                         </div>
                     </div>

@@ -32,7 +32,9 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
-            'fee_per_month' => 'required|numeric|min:0',
+            'fee_per_month' => 'required|numeric|min:0.01',
+        ], [
+            'fee_per_month.min' => 'Fee per month must be a positive number greater than zero.'
         ]);
 
         $course = Course::create($validated);
@@ -66,7 +68,9 @@ class CourseController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
-            'fee_per_month' => 'required|numeric|min:0',
+            'fee_per_month' => 'required|numeric|min:0.01',
+        ], [
+            'fee_per_month.min' => 'Fee per month must be a positive number greater than zero.'
         ]);
 
         $course->update($validated);
