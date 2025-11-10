@@ -1,66 +1,232 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Fee Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A comprehensive Laravel-based Fee Management System with role-based authentication for managing students, courses, and payments with EMI support.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 🔐 Authentication & Authorization
+- **Role-based Access Control**: Admin and Student roles
+- **Laravel Breeze**: Built-in authentication system
+- **Protected Routes**: Middleware-based route protection
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 👨‍💼 Admin Features
+- **Student Management**
+  - Add, edit, delete students
+  - Assign courses to students
+  - Manage student status (Active/Inactive/Suspended/Rejected)
+  - View student fee details and payment history
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Course Management**
+  - Add, edit, delete courses
+  - Set duration and monthly fees
+  - Track enrolled students per course
+  - View revenue projections
 
-## Learning Laravel
+- **Payment Management**
+  - Record payments for students
+  - Automatic fee calculation (duration × fee_per_month)
+  - Track remaining balances
+  - EMI calculator for installment planning
+  - Complete payment history
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 👨‍🎓 Student Features
+- **Personal Dashboard**
+  - View enrolled courses
+  - Check fee summary (Total, Paid, Balance)
+  - View payment history
+  - Access profile settings
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
+- PHP >= 8.0
+- Composer
+- MySQL/MariaDB
+- Node.js & NPM
 
-## Laravel Sponsors
+### Setup Steps
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/suneer/fee-management.git
+   cd fee-management
+   ```
 
-### Premium Partners
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+3. **Install Node dependencies**
+   ```bash
+   npm install
+   ```
 
-## Contributing
+4. **Environment setup**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Configure database** (Edit `.env` file)
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=fee_management
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-## Code of Conduct
+6. **Run migrations and seeders**
+   ```bash
+   php artisan migrate:fresh
+   php artisan db:seed --class=CourseSeeder
+   php artisan db:seed --class=UserSeeder
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. **Build assets**
+   ```bash
+   npm run build
+   ```
 
-## Security Vulnerabilities
+8. **Start the development server**
+   ```bash
+   php artisan serve
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+9. **Access the application**
+   - URL: `http://127.0.0.1:8000`
+
+## Default Login Credentials
+
+### Admin Account
+- **Email**: admin@feemanagement.com
+- **Password**: admin123
+
+### Student Accounts
+- **Email**: student1@example.com / student2@example.com / student3@example.com
+- **Password**: student123 (for all students)
+
+## Database Schema
+
+### Tables
+- **users** - User authentication with roles (admin/student)
+- **students** - Student profiles and information
+- **courses** - Course details (name, duration, fees)
+- **payments** - Payment records
+- **course_student** - Pivot table for student-course enrollment
+
+### Relationships
+- One User → One Student (for student role)
+- Many Students → Many Courses (many-to-many)
+- One Student → Many Payments
+- One Course → Many Payments
+
+## Technologies Used
+
+- **Backend**: Laravel 10.x
+- **Frontend**: Bootstrap 5, Blade Templates
+- **Authentication**: Laravel Breeze
+- **Database**: MySQL
+- **Icons**: Bootstrap Icons
+
+## Key Functionalities
+
+### Fee Calculation
+```
+Total Course Fee = Duration (months) × Fee per Month
+Remaining Balance = Total Course Fee - Total Paid
+```
+
+### EMI Calculator
+- Divide remaining balance into monthly installments
+- Flexible terms (2-24 months)
+- Automatic due date calculation
+- Visual payment schedule
+
+### Payment Tracking
+- Per-course payment tracking
+- Automatic balance updates
+- Complete audit trail
+- Date-wise payment history
+
+## Project Structure
+
+```
+fee-management/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── StudentController.php
+│   │   │   ├── CourseController.php
+│   │   │   └── PaymentController.php
+│   │   └── Middleware/
+│   │       └── IsAdmin.php
+│   └── Models/
+│       ├── User.php
+│       ├── Student.php
+│       ├── Course.php
+│       └── Payment.php
+├── database/
+│   ├── migrations/
+│   └── seeders/
+│       ├── CourseSeeder.php
+│       └── UserSeeder.php
+├── resources/
+│   └── views/
+│       ├── layouts/
+│       │   └── admin.blade.php
+│       ├── students/
+│       ├── courses/
+│       ├── payments/
+│       └── student/
+│           └── dashboard.blade.php
+└── routes/
+    └── web.php
+```
+
+## Security Features
+
+- Password hashing with bcrypt
+- CSRF protection
+- SQL injection prevention
+- XSS protection
+- Authentication middleware
+- Role-based authorization
+
+## Screenshots
+
+### Admin Dashboard
+- Student list with fee details
+- Course management
+- Payment recording
+
+### Student Dashboard  
+- Personal profile
+- Enrolled courses
+- Fee summary
+- Payment history
+
+## Future Enhancements
+
+- [ ] Email notifications for payments
+- [ ] PDF receipt generation
+- [ ] SMS reminders for pending fees
+- [ ] Advanced reporting and analytics
+- [ ] Bulk payment import
+- [ ] Multi-currency support
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Support
+
+For issues and questions, please create an issue on GitHub or contact the administrator.
+
+## Credits
+
+Developed by Suneer
+- GitHub: [@suneer](https://github.com/suneer)
+- Repository: [fee-management](https://github.com/suneer/fee-management)

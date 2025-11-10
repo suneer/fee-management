@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Payment for ' . $student->name)
 @section('page-title', 'Record Payment')
